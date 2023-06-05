@@ -12,10 +12,16 @@ const Header = ({ name }) => {
 }
 
 const Content = ({ content }) => {
+  let total = 0
+  content.forEach(part => {
+    total += part.exercises
+  })
+
   return (
     <div>
       {content.map(content =>
         <Part key={content.id} part={content.name} exercises={content.exercises} />)}
+      <b>total of {total} exercises</b>
     </div>
   )
 }
