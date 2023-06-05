@@ -12,10 +12,7 @@ const Header = ({ name }) => {
 }
 
 const Content = ({ content }) => {
-  let total = 0
-  content.forEach(part => {
-    total += part.exercises
-  })
+  const total = content.reduce((s, p) => s + p.exercises, 0);
 
   return (
     <div>
