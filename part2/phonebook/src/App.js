@@ -65,20 +65,27 @@ const App = () => {
       return
     }
 
-    if (persons.some((item) => item.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
-
     const newNames = {
       name: newName,
       number: newNumber,
     }
 
+    if (persons.some((item) => item.name === newName)) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with the new one?`)) {
+        const filteredPerson = persons.filter(person => person.name === newName)
+        const id = filteredPerson[0].id
+        personService
+        .update(id, newNames)
+        .then(response => {
+          setPersons(persons.filter(person => person.id !== id).concat(response))
+        })
+      }
+      return
+    }
+
     personService
     .create(newNames)
     .then(response => {
-      console.log(response)
       setPersons(persons.concat(response))
       setNewName('')
       setNewNumber('')
