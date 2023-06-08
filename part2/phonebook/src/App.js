@@ -35,7 +35,7 @@ const Persons = ({ filteredPersons }) => {
   return (
     <div>
       {filteredPersons.map((person) => (
-        <p key={person.name}>
+        <p key={person.id}>
           {person.name} {person.number}
         </p>
       ))}
@@ -50,18 +50,20 @@ const App = () => {
   const [filter, setNewFilter] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'numbers')
 
   const addNewNumber = (event) => {
     event.preventDefault()
+
+    if (newName === '') {
+      alert('Name cannot be empty')
+      return
+    }
 
     if (persons.some((item) => item.name === newName)) {
       alert(`${newName} is already added to phonebook`)
@@ -72,6 +74,12 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
+
+    axios
+    .post('http://localhost:3001/persons', newNames)
+    .then(response => {
+      console.log(response)
+    })
 
     setPersons(persons.concat(newNames))
     setNewName('')
