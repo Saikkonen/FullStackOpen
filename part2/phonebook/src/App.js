@@ -1,60 +1,11 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 import './index.css'
 
-const Filter = ({ filter, handleFilterChange }) => {
-  return (
-    <div>
-      filter shown with <input value={filter} onChange={handleFilterChange} />
-    </div>
-  )
-}
-
-const PersonForm = ({
-  addNewNumber,
-  newName,
-  handleNameChange,
-  newNumber,
-  handleNumberChange,
-}) => {
-  return (
-    <form onSubmit={addNewNumber}>
-      <div>
-        name: <input value={newName} onChange={handleNameChange} />
-      </div>
-      <div>
-        number: <input value={newNumber} onChange={handleNumberChange} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Persons = ({ filteredPersons, deletePerson }) => {
-  return (
-    <div>
-      {filteredPersons.map((person) => (
-        <p key={person.id}>
-          {person.name} {person.number} <button onClick={() => deletePerson(person.id)}>delete</button>
-        </p>
-      ))}
-    </div>
-  )
-}
-
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-
-  return (
-    <div className="notification">
-      {message}
-    </div>
-  )
-}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -120,6 +71,9 @@ const App = () => {
 
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id)
+      .catch(error =>{
+        setErrorMessage(`ERROR: ${name} has already been deleted from the server`)
+      })
       setPersons(persons.filter(person => person.id !== id))
       setErrorMessage(`Deleted ${name}`)
       setTimeout(() => {
