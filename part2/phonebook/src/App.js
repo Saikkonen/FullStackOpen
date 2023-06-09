@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 
 const Filter = ({ filter, handleFilterChange }) => {
   return (
@@ -43,11 +44,24 @@ const Persons = ({ filteredPersons, deletePerson }) => {
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -78,6 +92,10 @@ const App = () => {
         .update(id, newNames)
         .then(response => {
           setPersons(persons.filter(person => person.id !== id).concat(response))
+          setErrorMessage(`Changed ${newName}'s number`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
       }
       return
@@ -89,6 +107,10 @@ const App = () => {
       setPersons(persons.concat(response))
       setNewName('')
       setNewNumber('')
+      setErrorMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     })
   }
 
@@ -99,6 +121,10 @@ const App = () => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id)
       setPersons(persons.filter(person => person.id !== id))
+      setErrorMessage(`Deleted ${name}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -121,6 +147,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>Add new</h2>
       <PersonForm
