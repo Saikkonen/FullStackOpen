@@ -1,9 +1,31 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
+import weatherService from './services/weather'
 
 const Countries = ({ countries, handleShowClick }) => {
+  const [weather, setWeather] = useState(null)
 
-  if (countries.length > 10){
+  const fetchWeather = (city) => {
+    weatherService.getWeather(city)
+      .then(response => {
+        setWeather(response)
+      })
+      .catch(error => {
+        console.error('Failed to fetch weather:', error)
+      })
+  }
+
+  useEffect(() => {
+    if (countries.length === 1) {
+      const country = countries[0]
+      const capital = country.capital[0]
+      fetchWeather(capital)
+    } else {
+      setWeather(null)
+    }
+  }, [countries])
+
+  if (countries.length > 10) {
     return (
       <div>
         Too many countries, specify another filter
@@ -28,11 +50,11 @@ const Countries = ({ countries, handleShowClick }) => {
       <div>
         <h2>{country.name.common}</h2>
         <div>
-          capital {country.capital} <br />
-          area {country.area} <br />
+          Capital city: {country.capital} <br />
+          Surface area: {country.area} km² <br />
         </div>
         <div>
-          <h3>languages:</h3>
+          <h3>Languages:</h3>
           <ul>
             {Object.entries(languages).map(([key, value]) => (
               <li key={key}>{value}</li>
@@ -41,6 +63,20 @@ const Countries = ({ countries, handleShowClick }) => {
         </div>
         <div>
           <img src={flag.png} alt={flag.alt} />
+        </div>
+        <div>
+          <h3>Weather in {country.capital}</h3>
+          {weather ? (
+            <div>
+              Temperature: {weather.main.temp} °C
+              <div>
+                <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description} />
+              </div>
+              Wind: {weather.wind.speed} m/s
+            </div>
+          ) : (
+            <div>Loading weather information...</div>
+          )}
         </div>
       </div>
     )
@@ -65,17 +101,20 @@ function App() {
   }
 
   useEffect(() => {
-    countriesService
-      .getCountries()
+    countriesService.getCountries()
       .then(response => {
         setCountries(response)
+        setFilteredCountries(response)
+      })
+      .catch(error => {
+        console.error('Failed to fetch countries:', error)
       })
   }, [])
 
   return (
     <div>
       Find countries <input value={searchTerm} onChange={handleSearchChange} />
-      <Countries countries={filteredCountries} handleShowClick={handleShowClick}/>
+      <Countries countries={filteredCountries} handleShowClick={handleShowClick} />
     </div>
   )
 }
