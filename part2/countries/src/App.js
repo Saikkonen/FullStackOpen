@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, handleShowClick }) => {
 
   if (countries.length > 10){
     return (
@@ -14,7 +14,7 @@ const Countries = ({ countries }) => {
       <div>
       {countries.map((country) => (
         <p key={country.name.common}>
-          {country.name.common}
+          {country.name.common} <button onClick={() => handleShowClick(country)}>Show</button>
         </p>
       ))}
     </div>
@@ -50,14 +50,19 @@ const Countries = ({ countries }) => {
 function App() {
   const [countries, setCountries] = useState([])
   const [searchTerm, setNewSearchTerm] = useState('')
+  const [filteredCountries, setFilteredCountries] = useState(countries)
 
   const handleSearchChange = (event) => {
     setNewSearchTerm(event.target.value)
+    const filtered = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(event.target.value.toLowerCase())
+    )
+    setFilteredCountries(filtered)
   }
 
-  const filteredCountries = countries.filter((country) =>
-    country.name.common.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-  )
+  const handleShowClick = (country) => {
+    setFilteredCountries([country])
+  }
 
   useEffect(() => {
     countriesService
@@ -70,7 +75,7 @@ function App() {
   return (
     <div>
       Find countries <input value={searchTerm} onChange={handleSearchChange} />
-      <Countries countries={filteredCountries}/>
+      <Countries countries={filteredCountries} handleShowClick={handleShowClick}/>
     </div>
   )
 }
