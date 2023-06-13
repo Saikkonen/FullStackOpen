@@ -50,6 +50,14 @@ app.post('/api/persons', (request, response) => {
     number: number,
   }
 
+  if (!name || !number) {
+    return response.status(400).json({ error: 'Name or number is missing' });
+  }
+
+  if (persons.some(person => person.name === name)) {
+    return response.status(400).json({ error: 'Name must be unique' })
+  }
+
   persons = persons.concat(newPerson)
   console.log(persons)
 
