@@ -24,6 +24,8 @@ let persons = [
   },
 ]
 
+app.use(express.json())
+
 app.get('/info', (request, response) => {
   const currentDate = new Date()
   const personsAmount = persons.length
@@ -35,6 +37,23 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
+})
+
+app.post('/api/persons', (request, response) => {
+  const id = Math.floor(Math.random() * 100000000)
+  const name = request.body.name
+  const number = request.body.number
+  
+  const newPerson = {
+    id: id,
+    name: name,
+    number: number,
+  }
+
+  persons = persons.concat(newPerson)
+  console.log(persons)
+
+  response.status(201).end()
 })
 
 app.get('/api/persons/:id', (request, response) => {
