@@ -25,8 +25,18 @@ let persons = [
   },
 ]
 
+morgan.token('content', function getContent (req) {
+  var content = JSON.stringify(req.body)
+
+  if(content === '{}') {
+    return null
+  }
+  
+  return content
+})
+
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 app.get('/info', (request, response) => {
   const currentDate = new Date()
