@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     personService
-      .getAll('http://localhost:3001/persons')
+      .getAll()
       .then(response => {
         setPersons(response)
       })
@@ -95,7 +95,7 @@ const App = () => {
   }
 
   const filteredPersons = persons.filter((person) =>
-    person.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+    person.name.toLowerCase().includes(filter.toLowerCase())
   )
 
   return (
