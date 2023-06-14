@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 let persons = [
@@ -25,6 +26,7 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 app.get('/info', (request, response) => {
   const currentDate = new Date()
@@ -44,12 +46,6 @@ app.post('/api/persons', (request, response) => {
   const name = request.body.name
   const number = request.body.number
   
-  const newPerson = {
-    id: id,
-    name: name,
-    number: number,
-  }
-
   if (!name || !number) {
     return response.status(400).json({ error: 'Name or number is missing' });
   }
@@ -58,8 +54,13 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({ error: 'Name must be unique' })
   }
 
+  const newPerson = {
+    id: id,
+    name: name,
+    number: number,
+  }
+
   persons = persons.concat(newPerson)
-  console.log(persons)
 
   response.status(201).end()
 })
