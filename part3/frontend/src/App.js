@@ -48,6 +48,12 @@ const App = () => {
             setErrorMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          setErrorMessage(`ERROR ${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
       }
       return
     }
@@ -59,6 +65,12 @@ const App = () => {
       setNewName('')
       setNewNumber('')
       setErrorMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    })
+    .catch(error => {
+      setErrorMessage(`ERROR ${error.response.data.error}`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
