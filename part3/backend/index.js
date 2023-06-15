@@ -20,6 +20,16 @@ app.use(express.json())
 app.use(express.static('build'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
+app.get('/info', (request, response) => {
+  const currentDate = new Date()
+  Person.countDocuments().then(personAmount => {
+    response.send(`
+    <p>Phonebook has info for ${personAmount} people</p>
+    <p>${currentDate}</p>
+    `)
+  })
+})
+
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
   .then(result => {
