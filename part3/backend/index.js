@@ -1,5 +1,5 @@
 require('dotenv').config()
-const person = require('./models/person')
+const Person = require('./models/person')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -30,44 +30,32 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  person.find({}).then(result => {
+  Person.find({}).then(result => {
     response.json(result)
   })
 })
 
 app.post('/api/persons', (request, response) => {
-  const id = Math.floor(Math.random() * 100000000)
-  const name = request.body.name
-  const number = request.body.number
-  
-  if (!name || !number) {
-    return response.status(400).json({ error: 'Name or number is missing' });
+  const body = request.body
+
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'content missing' })
   }
 
-  if (persons.some(person => person.name === name)) {
-    return response.status(400).json({ error: 'Name must be unique' })
-  }
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
 
-  const newPerson = {
-    id: id,
-    name: name,
-    number: number,
-  }
-
-  persons = persons.concat(newPerson)
-
-  response.json(newPerson)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  
-  if (person) {
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
