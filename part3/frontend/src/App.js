@@ -83,14 +83,20 @@ const App = () => {
 
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id)
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== id))
+        setErrorMessage(`Deleted ${name}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
       .catch(error =>{
         setErrorMessage(`ERROR: ${name} has already been deleted from the server`)
+        setPersons(persons.filter(person => person.id !== id))
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
-      setPersons(persons.filter(person => person.id !== id))
-      setErrorMessage(`Deleted ${name}`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
   }
 
