@@ -11,7 +11,7 @@ morgan.token('content', function getContent (req) {
   if(content === '{}') {
     return null
   }
-  
+
   return content
 })
 
@@ -32,10 +32,10 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
-  .then(result => {
-    response.json(result)
-  })
-  .catch(error => next(error))
+    .then(result => {
+      response.json(result)
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
@@ -51,22 +51,22 @@ app.post('/api/persons', (request, response, next) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    response.json(savedPerson)
-  })
-  .catch(error => next(error))
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
-  .then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
