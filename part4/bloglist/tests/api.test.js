@@ -60,6 +60,22 @@ test('a valid blog can be added ', async () => {
   expect(contents).toContain('new blog')
 })
 
+test('blog without likes is defaults to 0 likes', async () => {
+  const newBlog = {
+    title: 'no likes',
+    author: ' ',
+    url: 'www.fi',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
