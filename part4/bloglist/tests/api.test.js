@@ -76,6 +76,18 @@ test('blog without likes is defaults to 0 likes', async () => {
   expect(response.body.likes).toBe(0)
 })
 
+test('blog without title or url is not added', async () => {
+  const newBlog = {
+    author: 'jonne',
+  }
+
+  await api.post('/api/blogs').send(newBlog).expect(400)
+
+  const blogsAtEnd = await api.get('/api/blogs')
+
+  expect(blogsAtEnd.body).toHaveLength(initialBlogs.length)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
