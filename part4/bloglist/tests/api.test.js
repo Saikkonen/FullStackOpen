@@ -90,13 +90,28 @@ test('blog without title or url is not added', async () => {
 
 test('blogs can be deleted', async () => {
   const blogs = await api.get('/api/blogs')
-  blogId = blogs.body[0].id
+  const blogId = blogs.body[0].id
 
   await api.delete(`/api/blogs/${blogId}`).expect(204)
 
   const blogsAtEnd = await api.get('/api/blogs')
-  
+
   expect(blogsAtEnd.body).toHaveLength(initialBlogs.length - 1)
+})
+
+test('blogs can be updated', async () => {
+  const blog = {
+    likes: 50
+  }
+
+  const blogs = await api.get('/api/blogs')
+  const blogId = blogs.body[0].id
+
+  await api.put(`/api/blogs/${blogId}`).send(blog).expect(200)
+
+  const blogsAtEnd = await api.get('/api/blogs')
+
+  expect(blogsAtEnd.body[0].likes).toBe(50)
 })
 
 afterAll(async () => {
