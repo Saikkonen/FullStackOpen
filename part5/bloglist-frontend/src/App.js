@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -38,12 +41,19 @@ const App = () => {
 
     try {
       const savedBlog = await blogService.create(blog)
+      setMessage(`a new blog ${title} by ${author} added`)
       setAuthor('')
       setTitle('')
       setUrl('')
       setBlogs(blogs.concat(savedBlog))
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } catch (exception) {
-      console.error(exception)
+      setErrorMessage(exception.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -62,7 +72,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.error(exception)
+      setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -71,10 +84,24 @@ const App = () => {
     setUser(null)
   }
 
+  const Notification = ({ notification }) => {
+    if (notification === null) {
+      return null
+    }
+
+    if (errorMessage) {
+      return <div className="error">{notification}</div>
+    } else if (message) {
+      return <div className="notification">{notification}</div>
+    }
+  }
+
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification notification={message}/>
+        <Notification notification={errorMessage}/>
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -103,6 +130,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification notification={message} />
+      <Notification notification={errorMessage} />
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
@@ -124,13 +153,11 @@ const App = () => {
         </div>
         <div>
           url:
-          <input
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
+          <input value={url} onChange={({ target }) => setUrl(target.value)} />
         </div>
         <button type="submit">create</button>
-      </form><br />
+      </form>
+      <br />
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
