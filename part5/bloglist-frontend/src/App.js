@@ -46,6 +46,23 @@ const App = () => {
       })
   }
 
+  const handleLikes = (blogId, updatedBlog) => {
+    blogService
+      .update(blogId, updatedBlog)
+      .then((returnedBlog) => {
+        var blogIndex = blogs.findIndex((blog) => blog.id === blogId)
+        var blogList = blogs
+        blogList[blogIndex].likes = returnedBlog.likes
+        setBlogs(blogList)
+      })
+      .catch((error) => {
+        setErrorMessage(error.message)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+  }
+
   const handleLogin = (userObject) => {
     loginService
       .login(userObject)
@@ -102,7 +119,7 @@ const App = () => {
       </Togglable>
       <br />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLikes={handleLikes} />
       ))}
     </div>
   ) 
