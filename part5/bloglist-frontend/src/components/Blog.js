@@ -23,7 +23,7 @@ const Blog = ({ blog, handleLikes, handleDelete, user }) => {
   const deleteBlog = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       handleDelete(blog.id)
-    } 
+    }
   }
 
   if (visible) {

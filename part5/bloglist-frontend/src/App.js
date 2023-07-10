@@ -17,7 +17,7 @@ const App = () => {
     blogService.getAll().then(blogs => {
       const sortedList = blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(sortedList)
-  })
+    })
   }, [])
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} user={user} handleLikes={handleLikes} handleDelete={handleDelete} />
       ))}
     </div>
-  ) 
+  )
 }
 
 export default App
