@@ -65,6 +65,21 @@ const App = () => {
       })
   }
 
+  const handleDelete = (blogId) => {
+    blogService
+      .remove(blogId)
+      .then(() => {
+        var blogList = blogs.filter((blog) => blog.id !== blogId)
+        setBlogs(blogList)
+      })
+      .catch((error) => {
+        setErrorMessage(error.message)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+  }
+
   const handleLogin = (userObject) => {
     loginService
       .login(userObject)
@@ -121,7 +136,7 @@ const App = () => {
       </Togglable>
       <br />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLikes={handleLikes} />
+        <Blog key={blog.id} blog={blog} user={user} handleLikes={handleLikes} handleDelete={handleDelete} />
       ))}
     </div>
   ) 
