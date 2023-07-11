@@ -28,7 +28,7 @@ const Blog = ({ blog, handleLikes, handleDelete, user }) => {
 
   if (visible) {
     return (
-      <div style={blogStyle}>
+      <div className='blog' style={blogStyle}>
         <div>
           {blog.title} {blog.author} <button onClick={() => setVisible(false)}>hide</button>
         </div>
@@ -47,7 +47,7 @@ const Blog = ({ blog, handleLikes, handleDelete, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div>
         {blog.title} {blog.author} <button onClick={() => setVisible(true)}>show</button>
       </div>
