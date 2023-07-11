@@ -28,6 +28,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            id='blog-title'
           />
         </div>
         <div>

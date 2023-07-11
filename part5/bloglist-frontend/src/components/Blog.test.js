@@ -20,8 +20,6 @@ test('renders the blogs title and author, but does not render its URL or number 
 
   const { container } = render(<Blog blog={blog} />)
 
-  screen.debug()
-
   const div = container.querySelector('.blog')
 
   expect(div).toHaveTextContent('title')
@@ -51,8 +49,6 @@ test('blogs URL and number of likes are shown when the button controlling the sh
   const user = userEvent.setup()
   const button = screen.getByText('show')
   await user.click(button)
-
-  screen.debug()
 
   expect(div).toHaveTextContent('title')
   expect(div).toHaveTextContent('author')
