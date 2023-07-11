@@ -59,3 +59,32 @@ test('blogs URL and number of likes are shown when the button controlling the sh
   expect(div).toHaveTextContent('likes')
   expect(div).toHaveTextContent('test.com')
 })
+
+test('if the like button is clicked twice, the event handler the component received as props is called twice', async () => {
+  const blog = {
+    title: 'title',
+    author: 'author',
+    url: 'test.com',
+    likes: 10,
+    user: {
+      username: 'username',
+      name: 'name',
+      id: '1',
+    },
+    id: '1',
+  }
+
+  const mockHandler = jest.fn()
+
+  render(<Blog blog={blog} user={blog.user} handleLikes={mockHandler} />)
+
+  const user = userEvent.setup()
+  const showButton = screen.getByText('show')
+  await user.click(showButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
