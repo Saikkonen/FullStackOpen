@@ -102,5 +102,46 @@ describe('Blog app', function () {
         cy.contains('remove').should('not.exist')
       })
     })
+
+    describe('when multiple blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'The title with the second most likes',
+          author: 'author 1',
+          url: 'www.com',
+        })
+
+        cy.createBlog({
+          title: 'The title with the least likes',
+          author: 'author 2',
+          url: 'www.com',
+        })
+
+        cy.createBlog({
+          title: 'The title with the most likes',
+          author: 'author 3',
+          url: 'www.com',
+        })
+
+        cy.visit('')
+      })
+
+      it('blog with the most likes is shown first', async function () {
+        // refresh the site after each like because i couldnt get it to work otherwise
+        cy.contains('The title with the second most likes').contains('show').click()
+        cy.contains('likes 0').contains('like').click()
+        cy.visit('')
+
+        // like third blog 3 times
+        for (let i = 0; i < 3; i++) {
+          cy.contains('The title with the most likes').contains('show').click()
+          cy.contains(`likes ${i}`).contains('like').click()
+          cy.visit('')
+        }
+
+        cy.get('.blog').eq(0).should('contain', 'The title with the most likes')
+        cy.get('.blog').eq(1).should('contain', 'The title with the second most likes')
+      })
+    })
   })
 })
