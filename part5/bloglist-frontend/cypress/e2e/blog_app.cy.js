@@ -83,6 +83,24 @@ describe('Blog app', function () {
 
         cy.get('html').should('not.contain', 'test author')
       })
+
+      it('delete button is only shown to the creator of the blog', function () {
+        cy.contains('test author').contains('show').click()
+        cy.contains('remove')
+
+        const newUser = {
+          name: 'test user',
+          username: 'test',
+          password: 'test',
+        }
+        // add a second user for testing
+        cy.request('POST', `${Cypress.env('BACKEND')}/users`, newUser)
+        // login to the new user
+        cy.login({ username: 'test', password: 'test' })
+
+        cy.contains('test author').contains('show').click()
+        cy.contains('remove').should('not.exist')
+      })
     })
   })
 })
