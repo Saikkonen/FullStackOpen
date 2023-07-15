@@ -72,6 +72,17 @@ describe('Blog app', function () {
         cy.contains('like').click()
         cy.contains('likes 1')
       })
+
+      it('it can be removed', function () {
+        cy.contains('test author').contains('show').click()
+        cy.contains('remove').click()
+        cy.on('window:confirm', (t) => {
+          //verify text on pop-up
+          expect(t).to.equal('Remove blog test by author')
+        })
+
+        cy.get('html').should('not.contain', 'test author')
+      })
     })
   })
 })
