@@ -38,6 +38,12 @@ const reducer = (state = initialState, action) => {
       } else {
         return state // If the id is not found, return the state unchanged
       }
+    case 'NEW':
+      const newAnecdote = action.payload
+      return [
+        ...state,
+        newAnecdote,
+      ]
     default:
       return state
   }

@@ -4,6 +4,22 @@ const App = () => {
   const anecdotes = useSelector(state => state)
   const dispatch = useDispatch()
 
+  const generateId = () => Number((Math.random() * 1000000).toFixed(0))
+
+  const addNew = (event) => {
+    event.preventDefault()
+    const content = event.target.anecdote.value
+    event.target.anecdote.value = ''
+    dispatch({
+      type: 'NEW',
+      payload: {
+        content,
+        id: generateId(),
+        votes: 0,
+      },
+    })
+  }
+
   const vote = (id) => {
     console.log('vote', id)
     dispatch({ type: 'VOTE', payload: { id }})
@@ -24,8 +40,8 @@ const App = () => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
+      <form onSubmit={addNew}>
+        <input name='anecdote' />
         <button>create</button>
       </form>
     </div>
