@@ -8,8 +8,18 @@ const App = () => {
   const queryClient = useQueryClient()
 
   const updateAnecdoteMutation = useMutation(updateAnecdote, {
-    onSuccess: (newAnecdote) => {
+    onSuccess: (anecdote) => {
       queryClient.invalidateQueries('anecdotes')
+      dispatch(`Anecdote '${anecdote.content}' voted`)
+      setTimeout(() => {
+        dispatch(null)
+      }, 5000)
+    },
+    onError: (err) => {
+      dispatch(err.message)
+      setTimeout(() => {
+        dispatch(null)
+      }, 5000)
     }
   })
 
@@ -17,10 +27,6 @@ const App = () => {
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({...anecdote, votes: anecdote.votes + 1})
-    dispatch(`Anecdote '${anecdote.content}' voted`)
-    setTimeout(() => {
-      dispatch(null)
-    }, 5000)
   }
 
   const result = useQuery('anecdotes', getAnecdotes, {
